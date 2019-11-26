@@ -1,0 +1,4 @@
+dbService\DBService.class
+templater\PageGenerator.class
+main\Main.class
+servlets\AllRequestsServlet.class
