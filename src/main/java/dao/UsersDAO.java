@@ -14,16 +14,15 @@ public class UsersDAO {
         this.session = session;
     }
 
-    public UsersDataSet get(long id) throws HibernateException {
-        Criteria criteria = session.createCriteria(UsersDataSet.class);
-        return (UsersDataSet) criteria.add(Restrictions.eq("id", id)).uniqueResult();
-    }
-
+    // метод, для получения пользователя из БД по логину
     public UsersDataSet getUserId (String login) throws HibernateException {
+        // метод createCriteria, который можно использовать для создания объекта Criteria,
+        // который возвращает объект UsersDataSet с заданным логином
         Criteria criteria = session.createCriteria(UsersDataSet.class);
         return ((UsersDataSet) criteria.add(Restrictions.eq("login", login)).uniqueResult());
     }
 
+    // метод сохраняет пользователя в БД и возвращает уникальный идентификатор
     public long insertUser(UsersDataSet user) throws HibernateException {
         return (Long) session.save(user);
     }

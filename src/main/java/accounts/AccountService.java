@@ -2,8 +2,6 @@ package accounts;
 
 import dao.UsersDAO;
 import dataSets.UsersDataSet;
-import dbService.DBException;
-//import dbService.DBService;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -15,89 +13,57 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AccountService {
-/*
-//    private final Map<String, UserProfile> userProfileMap;
-
-    // создание dbService
-    private DBService dbService;
-
-    public AccountService() {
-//        userProfileMap = new HashMap<>();
-        dbService = new DBService();
-    }
-
-    public void addNewUser(UserProfile userProfile) {
-//        userProfileMap.put(userProfile.getLogin(), userProfile);
-
-        try {
-            // создание пользователя в БД
-            long userId = dbService.addUser(userProfile);
-//            System.out.println("Added user id: " + userId);
-
-        } catch (
-                DBException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public UsersDataSet getUserByLogin(String login) {
-        try {
-            UsersDataSet dataSet = dbService.getUser(login);
-            return dataSet;
-        } catch (DBException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }*/
 
     private static final String hibernate_show_sql = "true";
     private static final String hibernate_hbm2ddl_auto = "update";
     private static final String hibernate_username = "test";
     private static final String hibernate_password = "test";
 
+    // sessionFactory
     private final SessionFactory sessionFactory;
-    private final Map<String, Long> sessionIdToProfile;
+//    // сохранение сессий
+//    private final Map<String, Long> sessionIdToProfile;
 
     public AccountService() {
         Configuration configuration = getH2Configuration();
         sessionFactory = createSessionFactory(configuration);
-
-        sessionIdToProfile = new HashMap<>();
+//        sessionIdToProfile = new HashMap<>();
     }
 
+    // добавление пользователя в БД
     public long addNewUser(UsersDataSet user) {
+        // открывается сессия
         Session session = sessionFactory.openSession();
+        // открытие транзакции
         Transaction transaction = session.beginTransaction();
+        // создается dao (работа с БД)
         UsersDAO dao = new UsersDAO(session);
+        // сохранение пользователя в БД и получение id (идентификатора пользователя)
         long id = dao.insertUser(user);
+        // проведение транзакции
         transaction.commit();
+        // закрытие сессии
         session.close();
         return id;
     }
 
+    // получение пользователя из БД по логину
     public UsersDataSet getUserByLogin(String login) {
+        // открывается сессия
         Session session = sessionFactory.openSession();
+        // создается dao (работа с БД)
         UsersDAO dao = new UsersDAO(session);
+        // получение пользователя по логину
         UsersDataSet ds = dao.getUserId(login);
+        // закрытие сессии
         session.close();
         return ds;
     }
 
-    public UsersDataSet getUserBySessionId(String sessionId) {
-        final Long userId = sessionIdToProfile.get(sessionId);
-        if(userId == null){
-            return null;
-        }
-        Session session = sessionFactory.openSession();
-        UsersDAO dao = new UsersDAO(session);
-        UsersDataSet ds = dao.get(userId);
-        session.close();
-        return ds;
-    }
-
-    public void addSession(long userId, String sessionId) {
-        sessionIdToProfile.put(sessionId, userId);
-    }
+//    // добавление сессии
+//    public void addSession(long userId, String sessionId) {
+//        sessionIdToProfile.put(sessionId, userId);
+//    }
 
     private Configuration getH2Configuration() {
         Configuration configuration = new Configuration();

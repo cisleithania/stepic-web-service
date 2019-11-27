@@ -27,17 +27,18 @@ public class SignInServlet extends HttpServlet {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
 
-        // если есть пользователь с таким логином, он записывается в userProfile
-//        UserProfile userProfile = null;
-//        userProfile = accountService.getUserByLogin(login);
-
+        // получение пользователя по принятому логину
         UsersDataSet dataSet = accountService.getUserByLogin(login);
 
+            // пароль заданный пользователем при регистрации, должен совпадать с введенным при авторизации
             if ((dataSet != null) && dataSet.getPassword().equals(password)) {
 
-                final long userId = dataSet.getId();
-                final String session = request.getSession().getId();
-                accountService.addSession(userId, session);
+//                // получение идентификатора пользователя, который ему дается при занесении в БД
+//                final long userId = dataSet.getId();
+//                // получение id сессии
+//                final String session = request.getSession().getId();
+//                // добавление сессии
+//                accountService.addSession(userId, session);
 
                 response.setStatus(HttpServletResponse.SC_OK); // Status code (200)
                 response.getWriter().println("Authorized: " + dataSet.getLogin());

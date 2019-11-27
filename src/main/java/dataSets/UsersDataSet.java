@@ -37,13 +37,6 @@ public class UsersDataSet implements Serializable {
         this.setPassword(password);
     }
 
-    public UsersDataSet(String login) {
-        this.setId(-1);
-        this.setLogin(login);
-        this.setPassword("");
-    }
-
-
     public long getId() {
         return id;
     }
